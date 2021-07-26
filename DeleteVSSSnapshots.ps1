@@ -39,12 +39,12 @@ ForEach ($ShadowCopy in $ShadowCopies) {
         If (Test-Path $SAMPath) {   
             Write-Output "-- SAM Database found, checking permissions"
             If ((Get-Acl $SAMPath).access.IdentityReference -contains "BUILTIN\Users") {
-                "--- Users can read this file, deleting Shadow Copy"
+                Write-Output "--- Users can read this file, deleting Shadow Copy"
                 $newSession=New-PSSession
                 Invoke-Command -Session $newSession -ScriptBlock{param($SnapShotId);vssadmin delete shadows /Shadow=$SnapShotId /quiet} -args $SnapShotId
                 $newSession|Remove-PSSession
             } Else {
-                "--- Users can't read this file"
+                Write-Output "--- Users can't read this file"
             }
         } Else {
             Write-Output "-- SAM Database not found"
